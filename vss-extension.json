@@ -1,0 +1,129 @@
+{
+  "manifestVersion": 1,
+  "id": "vsts-protractor",
+  "name": "Protractor Report",
+  "publisher": "Finastra",
+  "public": false,
+  "author": "Maciej Maciejewski",
+  "version": "0.0.1",
+  "description": "Embed Protractor HTML report in Azure Pipelines",
+  "galleryFlags": [
+    "Preview"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "scopes": [
+    "vso.build_execute",
+    "vso.release_execute"
+  ],
+  "icons": {
+    "default": "images/protractor-logo.png"
+  },
+  "demands": [
+    "api-version/3.0"
+  ],
+  "tags": [
+    "Protractor",
+    "Build",
+    "Release",
+    "Azure Pipelines",
+    "Visual Studio Extensions"
+  ],
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "content": {
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "branding": {
+    "color": "rgb(220, 235, 252)",
+    "theme": "light"
+  },
+  "files": [
+    {
+      "path": "tab-build.html",
+      "addressable": true
+    },
+    {
+      "path": "protractor/app.js",
+      "packagePath": "/app.js",
+      "addressable": true
+    },
+    {
+      "path": "protractor/report.html",
+      "packagePath": "/report.html",
+      "addressable": true
+    },
+    {
+      "path": "images",
+      "addressable": true
+    },
+    {
+      "path": "dist",
+      "addressable": true
+    },
+    {
+      "path": "node_modules/mustache/mustache.min.js",
+      "packagePath": "/mustache.min.js",
+      "addressable": true
+    },
+    {
+      "path": "protractor/assets",
+      "packagePath": "/assets",
+      "addressable": true
+    },
+    {
+      "path": "protractor/fonts",
+      "packagePath": "/fonts",
+      "addressable": true
+    },
+    {
+      "path": "lib/fetch.js",
+      "packagePath": "fetch.js",
+      "addressable": true
+    },
+    {
+      "path": "tasks/PublishProtractorReport",
+      "addressable": true
+    },
+    {
+      "path": "node_modules/vss-web-extension-sdk/lib",
+      "packagePath": "lib",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "build-protractor-tab",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "Embed Protractor HTML report in Azure Pipelines",
+      "targets": [
+        "ms.vss-build-web.build-results-view"
+      ],
+      "properties": {
+        "name": "Protractor",
+        "uri": "tab-build.html",
+        "registeredObjectId": "registeredEnvironmentObject",
+        "dynamic": true
+      },
+      "includes": [
+        "ms.vss-releaseManagement-web.release-service-data-external"
+      ]
+    },
+    {
+      "id": "PublishProtractorReport",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "tasks/PublishProtractorReport"
+      }
+    }
+  ]
+}

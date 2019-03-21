@@ -1,0 +1,16 @@
+{
+  "name": "publishprotractorreport",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "upload": "tfx build tasks upload --task-path ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.7.7",
+    "mustache": "^3.0.1"
+  }
+}

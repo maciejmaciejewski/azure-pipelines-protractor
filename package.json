@@ -1,0 +1,33 @@
+{
+  "name": "vsts-protractor-extension",
+  "version": "1.0.0",
+  "description": "Embed Protractor HTML result into release and build tabs",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maciejmaciejewski/vsts-protractor-extension.git"
+  },
+  "keywords": [
+    "VSTS",
+    "Protractor"
+  ],
+  "author": "Maciej Maciejewski <maciej.maciejewski@finastra.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maciejmaciejewski/vsts-protractor-extension/issues"
+  },
+  "homepage": "https://github.com/maciejmaciejewski/vsts-protractor-extension#readme",
+  "dependencies": {
+    "fetch": "^1.1.0",
+    "mustache": "^3.0.1",
+    "vss-web-extension-sdk": "^5.141.0"
+  },
+  "devDependencies": {
+    "@types/node": "^11.9.4",
+    "typescript": "^3.3.3"
+  }
+}

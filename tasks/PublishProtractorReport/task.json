@@ -1,0 +1,37 @@
+{
+  "id": "e9a37290-3428-11e9-a0c0-333b046ddb44",
+  "name": "PublishProtractorReport",
+  "friendlyName": "Publish Protractor Report",
+  "description": "Publish Protractor Report",
+  "author": "MaciejMaciejewski",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "10"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Publish Protractor Report",
+  "inputs": [
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Report Directory",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": false,
+      "helpMarkDown": "Path to Protractor Report directory"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "main.js",
+      "argumentFormat": ""
+    }
+  }
+}

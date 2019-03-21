@@ -1,1 +1,1 @@
-# azure-devops-protractor-extension
+# vsts-protractor-extension
