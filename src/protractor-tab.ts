@@ -48,7 +48,7 @@ class BuildProtractorReportTab extends BaseProtractorReportTab {
     super.initialize();
 
     this.config.onBuildChanged((build: TFS_Build_Contracts.Build) => {
-      // this.findAttachment(build)
+      this.findAttachment(build)
     })
   }
 
