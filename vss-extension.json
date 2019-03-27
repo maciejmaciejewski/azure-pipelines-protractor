@@ -109,6 +109,7 @@
         "name": "Protractor",
         "uri": "tab-build.html",
         "registeredObjectId": "registeredEnvironmentObject",
+        "supportsTasks": ["e9a37290-3428-11e9-a0c0-333b046ddb44"],
         "dynamic": true
       },
       "includes": [
