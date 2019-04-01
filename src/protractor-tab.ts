@@ -45,6 +45,8 @@ class BuildProtractorReportTab extends BaseProtractorReportTab {
   }
 
   public initialize(): void {
+    super.initialize();
+
     this.config.onBuildChanged((build: TFS_Build_Contracts.Build) => {
       this.findAttachment(build)
     })
@@ -126,5 +128,7 @@ class BuildProtractorReportTab extends BaseProtractorReportTab {
 
 
 const htmlContainer = document.getElementById("container");
-BuildProtractorReportTab.enhance(BuildProtractorReportTab, htmlContainer, {});
+if (typeof VSS.getConfiguration().onBuildChanged === "function") {
+  BuildProtractorReportTab.enhance(BuildProtractorReportTab, htmlContainer, {});
+}
 
