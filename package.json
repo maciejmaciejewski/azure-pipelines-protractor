@@ -4,25 +4,24 @@
   "description": "Embed Protractor HTML result into release and build tabs",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maciejmaciejewski/vsts-protractor-extension.git"
+    "url": "git+https://github.com/maciejmaciejewski/azure-pipelines-protractor.git"
   },
+  "private": true,
   "keywords": [
-    "VSTS",
+    "Azure DevOps",
     "Protractor"
   ],
   "author": "Maciej Maciejewski <maciej.maciejewski@finastra.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/maciejmaciejewski/vsts-protractor-extension/issues"
+    "url": "https://github.com/maciejmaciejewski/azure-pipelines-protractor/issues"
   },
-  "homepage": "https://github.com/maciejmaciejewski/vsts-protractor-extension#readme",
+  "homepage": "https://github.com/maciejmaciejewski/azure-pipelines-protractor#readme",
   "dependencies": {
-    "fetch": "^1.1.0",
     "mustache": "^3.0.1",
     "vss-web-extension-sdk": "^5.141.0"
   },
