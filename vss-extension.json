@@ -5,7 +5,7 @@
   "publisher": "Finastra",
   "public": false,
   "author": "Maciej Maciejewski",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Embed Protractor HTML report in Azure Pipelines",
   "galleryFlags": [
     "Preview"
