@@ -15,12 +15,29 @@
     });
     let noop = function () {
     };
+
     VSS.ready(function () {
       require(["dist/protractor-tab"], noop);
       VSS.notifyLoadSucceeded();
     });
+
     VSS.register("registeredEnvironmentObject", {
       updateContext: noop
+    });
+
+    VSS.register("registerRelease", {
+      updateContext: noop,
+      isInvisible: function (state) {
+        let protractorTaskId = "e9a37290-3428-11e9-a0c0-333b046ddb44"
+        let resultArray = []
+        state.releaseEnvironment.deployPhasesSnapshot.forEach(phase => {
+          phase.workflowTasks.forEach(task => {
+              resultArray.push(task.taskId)
+          })
+        })
+
+        return !resultArray.includes(protractorTaskId)
+      }
     });
   </script>
 
