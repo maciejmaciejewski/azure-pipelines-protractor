@@ -7,7 +7,7 @@
     "start": "node main.js",
     "upload": "tfx build tasks upload --task-path ."
   },
-  "author": "",
+  "author": "Maciej Maciejewski",
   "license": "ISC",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.7.7",

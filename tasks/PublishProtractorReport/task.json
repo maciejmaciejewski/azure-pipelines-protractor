@@ -4,7 +4,8 @@
   "friendlyName": "Publish Protractor Report",
   "description": "Publish Protractor Report",
   "author": "Maciej Maciejewski",
-  "helpMarkDown": "Replace with markdown to show in help",
+  "helpUrl": "https://github.com/maciejmaciejewski/azure-pipelines-protractor#usage-examples",
+  "helpMarkDown": "[More Information](https://github.com/maciejmaciejewski/azure-pipelines-protractor#usage-examples)",
   "category": "Utility",
   "visibility": [
     "Build",
@@ -14,7 +15,7 @@
   "version": {
     "Major": "0",
     "Minor": "1",
-    "Patch": "10"
+    "Patch": "11"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Publish Protractor Report",
@@ -24,7 +25,7 @@
       "type": "filePath",
       "label": "Report Directory",
       "defaultValue": "$(System.DefaultWorkingDirectory)",
-      "required": false,
+      "required": true,
       "helpMarkDown": "Path to Protractor Report directory"
     }
   ],

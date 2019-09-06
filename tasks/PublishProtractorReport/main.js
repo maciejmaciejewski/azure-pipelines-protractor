@@ -3,7 +3,7 @@ const path = require('path')
 const taskLibrary = require('azure-pipelines-task-lib/task')
 
 function uploadScreenshots (reportDirPath) {
-  let screenshotsDir = path.join(reportDirPath, 'screenshots')
+  const screenshotsDir = path.join(reportDirPath, 'screenshots')
   fs.readdirSync(screenshotsDir).forEach((fileName) => {
     const screenshotProperties = {
       name: fileName,
@@ -25,7 +25,7 @@ function uploadResultsJson (reportDirPath) {
 
 function run () {
   try {
-    let reportDirPath = path.resolve(taskLibrary.getInput('cwd', true))
+    const reportDirPath = path.resolve(taskLibrary.getInput('cwd', true))
     uploadResultsJson(reportDirPath)
     uploadScreenshots(reportDirPath)
   } catch (err) {
