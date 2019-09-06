@@ -113,7 +113,7 @@
         "name": "Protractor",
         "uri": "tab-build.html",
         "registeredObjectId": "registeredEnvironmentObject",
-        "supportsTasks": ["e9a37290-3428-11e9-a0c0-333b046ddb44"],
+        "supportsTasks": ["58dde358-3f32-518a-8081-df29ee91c249"],
         "dynamic": true
       },
       "includes": [
@@ -134,7 +134,7 @@
       "includes": ["ms.vss-releaseManagement-web.release-service-data-external"]
     },
     {
-      "id": "e9a37290-3428-11e9-a0c0-333b046ddb44",
+      "id": "PublishProtractorReport",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
