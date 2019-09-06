@@ -96,10 +96,6 @@
       "addressable": false
     },
     {
-      "path": "tasks/PublishProtractorReport/node_modules",
-      "addressable": false
-    },
-    {
       "path": "node_modules/vss-web-extension-sdk/lib",
       "packagePath": "lib",
       "addressable": true
@@ -144,7 +140,8 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "tasks/PublishProtractorReport"
+        "name": "tasks/PublishProtractorReport",
+        "displayName": "Publish Protractor Report"
       }
     }
   ]
