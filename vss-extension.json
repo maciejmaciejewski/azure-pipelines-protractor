@@ -134,7 +134,7 @@
       "includes": ["ms.vss-releaseManagement-web.release-service-data-external"]
     },
     {
-      "id": "PublishProtractorReport",
+      "id": "e9a37290-3428-11e9-a0c0-333b046ddb44",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
