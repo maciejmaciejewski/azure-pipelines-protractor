@@ -159,7 +159,7 @@ class ReleaseProtractorReportTab extends BaseProtractorReportTab {
           for (const phase of deployStep.releaseDeployPhases) {
             for (const deploymentJob of phase.deploymentJobs){
               for (const task of deploymentJob.tasks){
-                if (typeof task.task !== 'undefined' && task.task.id === "58dde358-3f32-518a-8081-df29ee91c249"){
+                if (typeof task.task !== 'undefined' && task.task.id === "e9a37290-3428-11e9-a0c0-333b046ddb44"){
                   runPlanId = phase.runPlanId;
                   break searchForRunPlanId;
                 }
@@ -177,7 +177,6 @@ class ReleaseProtractorReportTab extends BaseProtractorReportTab {
         runPlanId,
         this.attachmentType,
       );
-
 
       if (attachments.length === 0) {
         throw new Error("There is no HTML result attachment");
