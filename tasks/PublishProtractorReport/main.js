@@ -7,7 +7,7 @@ function uploadScreenshots (reportDirPath) {
   const files = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
   files.forEach(file => {
       const screenshotProperties = {
-        name: file,
+        name: path.basename(file),
         type: 'protractor.screenshot'
       }
 
