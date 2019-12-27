@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
-  "id": "vsts-protractor",
+  "id": "azure-pipelines-protractor",
   "name": "Protractor Report",
-  "publisher": "Finastra",
+  "publisher": "MaciejMaciejewski",
   "public": false,
   "author": "Maciej Maciejewski",
   "version": "1.0.0",
@@ -140,7 +140,8 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "tasks/PublishProtractorReport"
+        "name": "tasks/PublishProtractorReport",
+        "displayName": "Publish Protractor Report"
       }
     }
   ]

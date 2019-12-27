@@ -178,7 +178,6 @@ class ReleaseProtractorReportTab extends BaseProtractorReportTab {
         this.attachmentType,
       );
 
-
       if (attachments.length === 0) {
         throw new Error("There is no HTML result attachment");
       }
