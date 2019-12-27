@@ -1,44 +1,44 @@
 const fs = require('fs')
 const path = require('path')
-const taskLibrary = require('azure-pipelines-task-lib/task')
+const tl = require('azure-pipelines-task-lib/task')
+const globby = require('globby')
 
-function uploadScreenshots (reportDirPath) {
-  const screenshotsDir = path.join(reportDirPath, 'screenshots')
-  try{
-    fs.readdirSync(screenshotsDir).forEach((fileName) => {
+function uploadScreenshots (files) {
+  files.forEach((file) => {
       const screenshotProperties = {
-        name: fileName,
+        name: file,
         type: 'protractor.screenshot'
       }
 
-      taskLibrary.command('task.addattachment', screenshotProperties, path.join(screenshotsDir, fileName))
+      tl.command('task.addattachment', screenshotProperties, file)
     })
-  } catch(err) {
-    throw new Error('Unable to process report')
-  }
 }
 
 function uploadResultsJson (reportDirPath) {
-  try {
     const properties = {
       name: 'protractor_report.json',
       type: 'protractor.report'
     }
 
-    taskLibrary.command('task.addattachment', properties, path.join(reportDirPath, 'combined.json'))
-  } catch (err) {
-    throw new Error('Unable to process report')
-  }
+    const combinedPath = path.join(reportDirPath, 'combined.json')
+    if (fs.existsSync(combinedPath)) {
+      tl.command('task.addattachment', properties, combinedPath)
+    } else {
+      tl.warning('Could not find combined.json report file')
+    }
 }
 
 function run () {
   try {
     const reportDirPath = path.resolve(taskLibrary.getInput('cwd', true))
+    const screenshots = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
+
+    uploadScreenshots(screenshots)
     uploadResultsJson(reportDirPath)
-    uploadScreenshots(reportDirPath)
+
   } catch (err) {
-    taskLibrary.warning(err)
-    taskLibrary.setResult(taskLibrary.TaskResult.SucceededWithIssues)
+    tl.warning(err)
+    tl.setResult(tl.TaskResult.SucceededWithIssues)
   }
 }
 

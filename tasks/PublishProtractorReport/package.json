@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.7.7",
+    "globby": "^10.0.1",
     "mustache": "^3.0.1"
   }
 }
