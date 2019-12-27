@@ -3,15 +3,16 @@ const path = require('path')
 const tl = require('azure-pipelines-task-lib/task')
 const globby = require('globby')
 
-function uploadScreenshots (files) {
-  files.forEach((file) => {
+function uploadScreenshots (reportDirPath) {
+  const files = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
+  files.forEach(file => {
       const screenshotProperties = {
         name: file,
         type: 'protractor.screenshot'
       }
 
       tl.command('task.addattachment', screenshotProperties, file)
-    })
+  })
 }
 
 function uploadResultsJson (reportDirPath) {
@@ -24,18 +25,21 @@ function uploadResultsJson (reportDirPath) {
     if (fs.existsSync(combinedPath)) {
       tl.command('task.addattachment', properties, combinedPath)
     } else {
-      tl.warning('Could not find combined.json report file')
+      throw new Error('Could not find report file')
     }
 }
 
 function run () {
   try {
     const reportDirPath = path.resolve(tl.getInput('cwd', true))
-    const screenshots = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
+    tl.debug(reportDirPath)
 
-    uploadScreenshots(screenshots)
-    uploadResultsJson(reportDirPath)
-
+    if(fs.existsSync(reportDirPath)) {
+      uploadScreenshots(reportDirPath)
+      uploadResultsJson(reportDirPath)
+    } else {
+      throw new Error('Could not find Protractor report directory')
+    }
   } catch (err) {
     tl.warning(err)
     tl.setResult(tl.TaskResult.SucceededWithIssues)
