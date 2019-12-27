@@ -93,7 +93,7 @@
     },
     {
       "path": "tasks/PublishProtractorReport",
-      "addressable": false
+      "addressable": true
     },
     {
       "path": "node_modules/vss-web-extension-sdk/lib",

@@ -4,14 +4,18 @@ const taskLibrary = require('azure-pipelines-task-lib/task')
 
 function uploadScreenshots (reportDirPath) {
   const screenshotsDir = path.join(reportDirPath, 'screenshots')
-  fs.readdirSync(screenshotsDir).forEach((fileName) => {
-    const screenshotProperties = {
-      name: fileName,
-      type: 'protractor.screenshot'
-    }
+  try{
+    fs.readdirSync(screenshotsDir).forEach((fileName) => {
+      const screenshotProperties = {
+        name: fileName,
+        type: 'protractor.screenshot'
+      }
 
-    taskLibrary.command('task.addattachment', screenshotProperties, path.join(screenshotsDir, fileName))
-  })
+      taskLibrary.command('task.addattachment', screenshotProperties, path.join(screenshotsDir, fileName))
+    })
+  } catch(err) {
+    throw new Error('Unable to process report')
+  }
 }
 
 function uploadResultsJson (reportDirPath) {
@@ -29,8 +33,8 @@ function run () {
     uploadResultsJson(reportDirPath)
     uploadScreenshots(reportDirPath)
   } catch (err) {
-    taskLibrary.error(err)
-    taskLibrary.setResult(taskLibrary.TaskResult.Failed)
+    taskLibrary.warning(err)
+    taskLibrary.setResult(taskLibrary.TaskResult.SucceededWithIssues)
   }
 }
 
