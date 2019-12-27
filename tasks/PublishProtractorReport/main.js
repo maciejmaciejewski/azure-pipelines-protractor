@@ -19,12 +19,16 @@ function uploadScreenshots (reportDirPath) {
 }
 
 function uploadResultsJson (reportDirPath) {
-  const properties = {
-    name: 'protractor_report.json',
-    type: 'protractor.report'
-  }
+  try {
+    const properties = {
+      name: 'protractor_report.json',
+      type: 'protractor.report'
+    }
 
-  taskLibrary.command('task.addattachment', properties, path.join(reportDirPath, 'combined.json'))
+    taskLibrary.command('task.addattachment', properties, path.join(reportDirPath, 'combined.json'))
+  } catch (err) {
+    throw new Error('Unable to process report')
+  }
 }
 
 function run () {
