@@ -30,7 +30,7 @@ function uploadResultsJson (reportDirPath) {
 
 function run () {
   try {
-    const reportDirPath = path.resolve(taskLibrary.getInput('cwd', true))
+    const reportDirPath = path.resolve(tl.getInput('cwd', true))
     const screenshots = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
 
     uploadScreenshots(screenshots)
