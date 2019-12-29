@@ -10,6 +10,18 @@
   "galleryFlags": [
     "Preview"
   ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/maciejmaciejewski/azure-pipelines-protractor"
+  },
+  "screenshots": [
+    {
+      "path": "documentation/azure-pipelines-configuration.png"
+    },
+    {
+      "path": "documentation/protractor-tab-build.png"
+    }
+  ],
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -29,13 +41,15 @@
     "Protractor",
     "Build",
     "Release",
-    "Azure Pipelines",
-    "Visual Studio Extensions"
+    "Azure Pipelines"
   ],
   "categories": [
     "Azure Pipelines"
   ],
   "content": {
+    "details": {
+      "path": "OVERVIEW.md"
+    },
     "license": {
       "path": "LICENSE"
     }
