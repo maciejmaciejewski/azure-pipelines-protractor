@@ -159,7 +159,7 @@ class ReleaseProtractorReportTab extends BaseProtractorReportTab {
           for (const phase of deployStep.releaseDeployPhases) {
             for (const deploymentJob of phase.deploymentJobs){
               for (const task of deploymentJob.tasks){
-                if (typeof task.task !== 'undefined' && task.task.id === "e9a37290-3428-11e9-a0c0-333b046ddb44"){
+                if (typeof task.task !== 'undefined' && task.task.id === "f921c333-68d3-50ff-9d01-c71ecafad96b"){
                   runPlanId = phase.runPlanId;
                   break searchForRunPlanId;
                 }
