@@ -4,7 +4,7 @@ const tl = require('azure-pipelines-task-lib/task')
 const globby = require('globby')
 
 function uploadScreenshots (reportDirPath) {
-  const files = globby.sync([`${reportDirPath}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
+  const files = globby.sync([`${reportDirPath.replace(/\\/g, '/')}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
   files.forEach(file => {
       const screenshotProperties = {
         name: path.basename(file),
