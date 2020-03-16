@@ -231,13 +231,15 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
 
     var results = <%resultJSON%>
     this.sortSpecs = function () {
-        this.results = results.sort(function sortFunction(a, b) {
-    if (a.sessionId < b.sessionId) return -1;else if (a.sessionId > b.sessionId) return 1;
+      this.results = results.sort(function sortFunction(a, b) {
+        if (a.instanceId < b.instanceId) return -1;
+        else if (a.instanceId > b.instanceId) return 1;
 
-    if (a.timestamp < b.timestamp) return -1;else if (a.timestamp > b.timestamp) return 1;
+        if (a.timestamp < b.timestamp) return -1;
+        else if (a.timestamp > b.timestamp) return 1;
 
-    return 0;
-});
+        return 0;
+      });
     };
 
     this.loadResultsViaAjax = function () {
