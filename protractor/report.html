@@ -5,11 +5,13 @@
     <title>Protractor Screenshot Report</title>
 
     <link rel="stylesheet" href="assets/main.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
     <link rel="stylesheet" href="assets/bootstrap.css">
     <script src="assets/angular.min.js"></script>
     <script>
-      <%appJsScript%>
-    </script>
+        <%appJsScript%>
+      </script>
     <script src="assets/jquery.min.js"></script>
     <script src="assets/bootstrap.min.js"></script>
     <script src="assets/circular-json.js"></script>
@@ -18,8 +20,10 @@
 <body ng-controller="ScreenshotReportController as ctrl" class="ng-cloak">
 
 <!-- Header -->
-<h2>
+<h2><span class="report-title">
     Test Results
+    </span>
+    <span ng-if="ctrl.showTotalDurationIn==='header'" class="h-total-duration"> ( {{ ctrl.totalDuration() | timeFormat:ctrl.totalDurationFormat }} )</span>
     <div class="pull-right">
         <button class="btn btn-default" ng-class="{active: !ctrl.displayTime}"
                 ng-click="ctrl.displayTime = !ctrl.displayTime">TIME
@@ -38,7 +42,7 @@
         </button>
     </div>
 </h2>
-
+<div class="bh-total-duration" ng-if="ctrl.showTotalDurationIn==='belowHeader'" ><span>Duration {{ ctrl.totalDuration() | timeFormat:ctrl.totalDurationFormat }}</span></div>
 <!-- Pass/Fail counts -->
 <div class="progress progress-striped">
     <div class="progress-bar progress-bar-success" ng-if="ctrl.passCount()" data-container="body" data-toggle="tooltip"
@@ -89,34 +93,30 @@
     <tbody ng-repeat="result in ctrl.results | bySearchSettings:searchSettings">
     <!-- Test Spec Header -->
     <tr ng-if="result.displaySpecName">
-        <th class="spec" colspan="10">
-            {{ctrl.currentSpec = ctrl.getSpec(result.description)}}
-        </th>
+        <th class="spec" colspan="10">{{ctrl.currentSpec = ctrl.getSpec(result.description)}}</th>
     </tr>
     <tr ng-if="ctrl.currentParent != ctrl.getParent(result.description) && ctrl.getParent(result.description)">
-        <th class="testCase" colspan="10">
-            {{ctrl.currentParent = ctrl.getParent(result.description)}}
-        </th>
+        <th class="testCase" colspan="10">{{ctrl.currentParent = ctrl.getParent(result.description)}}</th>
     </tr>
 
     <tr ng-class="{danger: !result.passed && !result.pending, warning: result.pending}">
-        <td class="smallColumn status" ng-if="result.passed && !result.pending">
+        <td class="smallColumn status c-status" ng-if="result.passed && !result.pending">
             <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>
         </td>
-        <td class="smallColumn status" ng-if="!result.passed && !result.pending">
+        <td class="smallColumn status c-status" ng-if="!result.passed && !result.pending">
             <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>
         </td>
-        <td class="smallColumn status" ng-if="result.pending">
+        <td class="smallColumn status c-status"  ng-if="result.pending">
             <span class="label label-warning"><span class="glyphicon glyphicon-option-horizontal"></span></span>
         </td>
-        <td class="smallColumn" ng-if="!ctrl.displayTime" ng-show="ctrl.displayTime">
-            <span class="label label-default" ng-class="{'label-warning': result.duration > 14, 'label-danger': result.duration > 19}">{{ctrl.round(result.duration, 1)}} s</span>
+        <td class="smallColumn c-time" ng-if="!ctrl.displayTime" ng-show="ctrl.displayTime">
+            <span class="label label-default" ng-class="{'label-warning': result.duration > ctrl.warningTime, 'label-danger': result.duration > ctrl.dangerTime}">{{ctrl.round(result.duration, 1)}} s</span>
         </td>
-        <td class="mediumColumn">{{ctrl.getShortDescription(result.description)}}</td>
-        <td ng-if="!ctrl.displayBrowser" ng-show="ctrl.displayBrowser">{{result.browser.name}} {{result.browser.version}}</td>
-        <td ng-if="!ctrl.displaySessionId" ng-show="ctrl.displaySessionId">{{result.sessionId}}</td>
-        <td ng-if="!ctrl.displayOS" ng-show="ctrl.displayOS">{{result.os}}</td>
-        <td>
+        <td class="mediumColumn c-sdescription">{{ctrl.getShortDescription(result.description)}}</td>
+        <td ng-if="!ctrl.displayBrowser" ng-show="ctrl.displayBrowser" class="c-browser">{{result.browser.name}} {{result.browser.version}}</td>
+        <td ng-if="!ctrl.displaySessionId" ng-show="ctrl.displaySessionId" class="c-session-id">{{result.sessionId}}</td>
+        <td ng-if="!ctrl.displayOS" ng-show="ctrl.displayOS" class="c-display-os">{{result.os}}</td>
+        <td class="c-messages">
             <div ng-if="ctrl.isValueAnArray(result.message)">
                 <span class="message" ng-repeat="message in result.message track by $index">{{message}}</span>
             </div>
@@ -124,110 +124,32 @@
                 {{result.message}}
             </div>
         </td>
-        <td class="logColumn">
-            <!--<button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal{{$index}}" ng-if="result.logWarnings > 0">{{result.logWarnings}}</button>-->
-            <!--<button class="btn btn-danger pull-right" data-toggle="modal" data-target="#modal{{$index}}" ng-if="result.logErrors > 0">{{result.logErrors}}</button>-->
+        <td class="logColumn c-log">
             <span class="label label-default ng-binding label-warning pull-right consoleLogLabel" ng-if="result.logWarnings > 0" data-toggle="modal" data-target="#modal{{$index}}">{{result.logWarnings}}</span>
             <span class="label label-default ng-binding label-danger pull-right consoleLogLabel" ng-if="result.logErrors > 0" data-toggle="modal" data-target="#modal{{$index}}">{{result.logErrors}}</span>
         </td>
-        <td class="smallColumn">
+        <td class="smallColumn c-stacktrace">
             <!-- Show stacktrace if failure -->
             <div ng-if="(!result.passed && !result.pending) || result.browserLogs.length > 0">
                 <span class="label label-white ng-binding pull-right" data-toggle="modal" data-target="#modal{{$index}}" ng-if="result.trace.length > 0">
                     <span class="glyphicon glyphicon-warning-sign red"></span>
                 </span>
                 <!-- Stacktrace Modal -->
-                <div class="modal" id="modal{{$index}}" tabindex="-1" role="dialog"
-                     aria-labelledby="modalLabel{{$index}}">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h6 class="modal-title" id="imageModalLabel{{$index}}">
-                                    {{ctrl.getParent(result.description)}}</h6>
-                                <h5 class="modal-title" id="imageModalLabel{{$index}}">
-                                    {{ctrl.getShortDescription(result.description)}}</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div ng-if="result.trace.length > 0">
-                                    <div ng-if="ctrl.isValueAnArray(result.trace)">
-                                        <pre class="logContainer" ng-repeat="trace in result.trace track by $index"><div ng-class="ctrl.applySmartHighlight(line)" ng-repeat="line in trace.split('\n') track by $index">{{line}}</div></pre>
-                                    </div>
-                                    <div ng-if="!ctrl.isValueAnArray(result.trace)">
-                                        <pre class="logContainer"><div ng-class="ctrl.applySmartHighlight(line)" ng-repeat="line in result.trace.split('\n') track by $index">{{line}}</div></pre>
-                                    </div>
-                                </div>
-                                <div ng-if="result.browserLogs.length > 0">
-                                    <h5 class="modal-title" id="imageModalLabel{{$index}}">
-                                        Browser logs:
-                                    </h5>
-
-                                    <pre class="logContainer"><div class="browserLogItem" ng-repeat="logError in result.browserLogs track by $index"><div><span class="label browserLogLabel label-default" ng-class="{'label-danger': logError.level==='SEVERE', 'label-warning': logError.level==='WARNING'}">{{logError.level}}</span><span class="label label-default">{{ctrl.convertTimestamp(logError.timestamp)}}</span><div ng-repeat="messageLine in logError.message.split('\\n') track by $index">{{ messageLine }}</div></div></div></pre>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-default"
-                                        ng-class="{active: ctrl.showSmartStackTraceHighlight}"
-                                        ng-click="ctrl.showSmartStackTraceHighlight = !ctrl.showSmartStackTraceHighlight">
-                                    <span class="glyphicon glyphicon-education black"></span> Smart Stack Trace
-                                </button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <pbr-stack-modal index="$index" data="result"></pbr-stack-modal>
             </div>
         </td>
-        <td ng-class="{'mediumColumn': ctrl.inlineScreenshots && result.screenShotFile}">
-            <div ng-if="!result.pending">
+        <td ng-class="{'mediumColumn': ctrl.inlineScreenshots && result.screenShotFile}" class="c-in-screenshots">
+            <div ng-if="!result.pending && result.screenShotFile">
                 <span ng-if="!ctrl.inlineScreenshots && result.screenShotFile"
                       class="label label-white ng-binding pull-right"
                       data-toggle="modal"
                       data-target="#imageModal{{$index}}">
-                            <span class="glyphicon glyphicon-picture black"></span>
+                        <span class="glyphicon glyphicon-picture black"></span>
                 </span>
                 <a href="" ng-if="ctrl.inlineScreenshots && result.screenShotFile" data-toggle="modal" data-target="#imageModal{{$index}}">
-                    <img ng-src="{{result.screenShotFile}}" class="screenshotLink"/></a>
+                    <img ng-src="{{result.screenShotFile}}" class="screenshotLink" alt="inline screenshot"></a>
                 <!-- Screenshot Modal -->
-                <div class="modal" id="imageModal{{$index}}" tabindex="-1" role="dialog"
-                     aria-labelledby="imageModalLabel{{$index}}">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h6 class="modal-title" id="imageModalLabel{{$index}}">
-                                    {{ctrl.getParent(result.description)}}</h6>
-                                <h5 class="modal-title" id="imageModalLabel{{$index}}">
-                                    {{ctrl.getShortDescription(result.description)}}</h5>
-                            </div>
-                            <div class="modal-body">
-                                <img class="screenshotImage" ng-src="{{result.screenShotFile}}">
-                            </div>
-                            <div class="modal-footer">
-                                <div class="pull-left">
-                                    <button ng-disabled="!($index > 0)" class="btn btn-default" data-dismiss="modal"
-                                            data-toggle="modal" data-target="#imageModal{{$index - 1}}">
-                                        Prev
-                                    </button>
-                                    <button ng-disabled="!($index < ctrl.results.length - 1)" class="btn btn-default"
-                                            data-dismiss="modal" data-toggle="modal"
-                                            data-target="#imageModal{{$index + 1}}">
-                                        Next
-                                    </button>
-                                </div>
-                                <a class="btn btn-primary" href="{{result.screenShotFile}}" target="_blank">
-                                    Open Image in New Tab
-                                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
-                                </a>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <pbr-screenshot-modal index="$index" data="result" has-previous="ctrl.hasPreviousScreenshot($index)" previous="ctrl.getPreviousScreenshotIdx($index)" has-next="ctrl.hasNextScreenshot($index)" next="ctrl.getNextScreenshotIdx($index)" ></pbr-screenshot-modal>
             </div>
         </td>
     </tr>
@@ -237,6 +159,7 @@
     <a class="github-button" href="https://github.com/Evilweed/protractor-beautiful-reporter" data-size="large" data-show-count="true" aria-label="Star Evilweed/protractor-beautiful-reporter on GitHub">Star</a>
 </div>
 {{ctrl.currentParent = "";""}}
+<div class="f-total-duration" ng-if="ctrl.showTotalDurationIn==='footer'" ><span>Duration {{ ctrl.totalDuration() | timeFormat:ctrl.totalDurationFormat }}</span></div>
 <script src="assets/main.js"></script>
 <script async defer src="assets/buttons.js"></script>
 </body>

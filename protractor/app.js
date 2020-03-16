@@ -47,28 +47,52 @@ var countLogMessages = function (item) {
     }
 };
 
+var convertTimestamp = function (timestamp) {
+    var d = new Date(timestamp),
+        yyyy = d.getFullYear(),
+        mm = ('0' + (d.getMonth() + 1)).slice(-2),
+        dd = ('0' + d.getDate()).slice(-2),
+        hh = d.getHours(),
+        h = hh,
+        min = ('0' + d.getMinutes()).slice(-2),
+        ampm = 'AM',
+        time;
+
+    if (hh > 12) {
+        h = hh - 12;
+        ampm = 'PM';
+    } else if (hh === 12) {
+        h = 12;
+        ampm = 'PM';
+    } else if (hh === 0) {
+        h = 12;
+    }
+
+    // ie: 2013-02-18, 8:35 AM
+    time = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+
+    return time;
+};
+
 var defaultSortFunction = function sortFunction(a, b) {
     if (a.sessionId < b.sessionId) {
         return -1;
-    }
-    else if (a.sessionId > b.sessionId) {
+    } else if (a.sessionId > b.sessionId) {
         return 1;
     }
 
     if (a.timestamp < b.timestamp) {
         return -1;
-    }
-    else if (a.timestamp > b.timestamp) {
+    } else if (a.timestamp > b.timestamp) {
         return 1;
     }
 
     return 0;
 };
 
-
 //</editor-fold>
 
-app.controller('ScreenshotReportController', function ($scope, $http) {
+app.controller('ScreenshotReportController', ['$scope', '$http', 'TitleService', function ($scope, $http, titleService) {
     var that = this;
     var clientDefaults = {};
 
@@ -80,6 +104,11 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
         pending: true,
         withLog: true
     }, clientDefaults.searchSettings || {}); // enable customisation of search settings on first page hit
+
+    this.warningTime = 1400;
+    this.dangerTime = 1900;
+    this.totalDurationFormat = clientDefaults.totalDurationFormat;
+    this.showTotalDurationIn = clientDefaults.showTotalDurationIn;
 
     var initialColumnSettings = clientDefaults.columnSettings; // enable customisation of visible columns on first page hit
     if (initialColumnSettings) {
@@ -101,9 +130,14 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
         } else {
             this.inlineScreenshots = false;
         }
+        if (initialColumnSettings.warningTime) {
+            this.warningTime = initialColumnSettings.warningTime;
+        }
+        if (initialColumnSettings.dangerTime) {
+            this.dangerTime = initialColumnSettings.dangerTime;
+        }
     }
 
-    this.showSmartStackTraceHighlight = true;
 
     this.chooseAllTypes = function () {
         var value = true;
@@ -133,33 +167,42 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
     this.getShortDescription = function (str) {
         return getShortDescription(str);
     };
-
-    this.convertTimestamp = function (timestamp) {
-        var d = new Date(timestamp),
-            yyyy = d.getFullYear(),
-            mm = ('0' + (d.getMonth() + 1)).slice(-2),
-            dd = ('0' + d.getDate()).slice(-2),
-            hh = d.getHours(),
-            h = hh,
-            min = ('0' + d.getMinutes()).slice(-2),
-            ampm = 'AM',
-            time;
-
-        if (hh > 12) {
-            h = hh - 12;
-            ampm = 'PM';
-        } else if (hh === 12) {
-            h = 12;
-            ampm = 'PM';
-        } else if (hh === 0) {
-            h = 12;
-        }
-
-        // ie: 2013-02-18, 8:35 AM
-        time = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
-
-        return time;
+    this.hasNextScreenshot = function (index) {
+        var old = index;
+        return old !== this.getNextScreenshotIdx(index);
     };
+
+    this.hasPreviousScreenshot = function (index) {
+        var old = index;
+        return old !== this.getPreviousScreenshotIdx(index);
+    };
+    this.getNextScreenshotIdx = function (index) {
+        var next = index;
+        var hit = false;
+        while (next + 2 < this.results.length) {
+            next++;
+            if (this.results[next].screenShotFile && !this.results[next].pending) {
+                hit = true;
+                break;
+            }
+        }
+        return hit ? next : index;
+    };
+
+    this.getPreviousScreenshotIdx = function (index) {
+        var prev = index;
+        var hit = false;
+        while (prev > 0) {
+            prev--;
+            if (this.results[prev].screenShotFile && !this.results[prev].pending) {
+                hit = true;
+                break;
+            }
+        }
+        return hit ? prev : index;
+    };
+
+    this.convertTimestamp = convertTimestamp;
 
 
     this.round = function (number, roundVal) {
@@ -190,7 +233,6 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
         return pendingCount;
     };
 
-
     this.failCount = function () {
         var failCount = 0;
         for (var i in this.results) {
@@ -200,6 +242,17 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
             }
         }
         return failCount;
+    };
+
+    this.totalDuration = function () {
+        var sum = 0;
+        for (var i in this.results) {
+            var result = this.results[i];
+            if (result.duration) {
+                sum += result.duration;
+            }
+        }
+        return sum;
     };
 
     this.passPerc = function () {
@@ -215,29 +268,29 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
         return this.passCount() + this.failCount() + this.pendingCount();
     };
 
-    this.applySmartHighlight = function (line) {
-        if (this.showSmartStackTraceHighlight) {
-            if (line.indexOf('node_modules') > -1) {
-                return 'greyout';
-            }
-            if (line.indexOf('  at ') === -1) {
-                return '';
-            }
-
-            return 'highlight';
-        }
-        return true;
-    };
-
     var results = <%resultJSON%>
+
     this.sortSpecs = function () {
         this.results = results.sort(function sortFunction(a, b) {
-    if (a.sessionId < b.sessionId) return -1;else if (a.sessionId > b.sessionId) return 1;
+                const valueA = a.instanceId * a.timestamp;
+                const valueB = b.instanceId * b.timestamp;
+                if (valueA < valueB) {
+                    return -1;
+                }
+                return 1;
+            });
 
-    if (a.timestamp < b.timestamp) return -1;else if (a.timestamp > b.timestamp) return 1;
+    };
 
-    return 0;
-});
+    this.setTitle = function () {
+        var title = $('.report-title').text();
+        titleService.setTitle(title);
+    };
+
+    // is run after all test data has been prepared/loaded
+    this.afterLoadingJobs = function () {
+        this.sortSpecs();
+        this.setTitle();
     };
 
     this.loadResultsViaAjax = function () {
@@ -252,15 +305,13 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
                         data = response.data;
                     } else if (response.data[0] === '"') { //detect super escaped file (from circular json)
                         data = CircularJSON.parse(response.data); //the file is escaped in a weird way (with circular json)
-                    }
-                    else
-                    {
+                    } else {
                         data = JSON.parse(response.data);
                     }
                 }
                 if (data) {
                     results = data;
-                    that.sortSpecs();
+                    that.afterLoadingJobs();
                 }
             },
             function (error) {
@@ -272,11 +323,10 @@ app.controller('ScreenshotReportController', function ($scope, $http) {
     if (clientDefaults.useAjax) {
         this.loadResultsViaAjax();
     } else {
-        this.sortSpecs();
+        this.afterLoadingJobs();
     }
 
-
-});
+}]);
 
 app.filter('bySearchSettings', function () {
     return function (items, searchSettings) {
@@ -316,3 +366,240 @@ app.filter('bySearchSettings', function () {
         return filtered;
     };
 });
+
+//formats millseconds to h m s
+app.filter('timeFormat', function () {
+    return function (tr, fmt) {
+        if(tr == null){
+            return "NaN";
+        }
+
+        switch (fmt) {
+            case 'h':
+                var h = tr / 1000 / 60 / 60;
+                return "".concat(h.toFixed(2)).concat("h");
+            case 'm':
+                var m = tr / 1000 / 60;
+                return "".concat(m.toFixed(2)).concat("min");
+            case 's' :
+                var s = tr / 1000;
+                return "".concat(s.toFixed(2)).concat("s");
+            case 'hm':
+            case 'h:m':
+                var hmMt = tr / 1000 / 60;
+                var hmHr = Math.trunc(hmMt / 60);
+                var hmMr = hmMt - (hmHr * 60);
+                if (fmt === 'h:m') {
+                    return "".concat(hmHr).concat(":").concat(hmMr < 10 ? "0" : "").concat(Math.round(hmMr));
+                }
+                return "".concat(hmHr).concat("h ").concat(hmMr.toFixed(2)).concat("min");
+            case 'hms':
+            case 'h:m:s':
+                var hmsS = tr / 1000;
+                var hmsHr = Math.trunc(hmsS / 60 / 60);
+                var hmsM = hmsS / 60;
+                var hmsMr = Math.trunc(hmsM - hmsHr * 60);
+                var hmsSo = hmsS - (hmsHr * 60 * 60) - (hmsMr*60);
+                if (fmt === 'h:m:s') {
+                    return "".concat(hmsHr).concat(":").concat(hmsMr < 10 ? "0" : "").concat(hmsMr).concat(":").concat(hmsSo < 10 ? "0" : "").concat(Math.round(hmsSo));
+                }
+                return "".concat(hmsHr).concat("h ").concat(hmsMr).concat("min ").concat(hmsSo.toFixed(2)).concat("s");
+            case 'ms':
+                var msS = tr / 1000;
+                var msMr = Math.trunc(msS / 60);
+                var msMs = msS - (msMr * 60);
+                return "".concat(msMr).concat("min ").concat(msMs.toFixed(2)).concat("s");
+        }
+
+        return tr;
+    };
+});
+
+
+function PbrStackModalController($scope, $rootScope) {
+    var ctrl = this;
+    ctrl.rootScope = $rootScope;
+    ctrl.getParent = getParent;
+    ctrl.getShortDescription = getShortDescription;
+    ctrl.convertTimestamp = convertTimestamp;
+    ctrl.isValueAnArray = isValueAnArray;
+    ctrl.toggleSmartStackTraceHighlight = function () {
+        var inv = !ctrl.rootScope.showSmartStackTraceHighlight;
+        ctrl.rootScope.showSmartStackTraceHighlight = inv;
+    };
+    ctrl.applySmartHighlight = function (line) {
+        if ($rootScope.showSmartStackTraceHighlight) {
+            if (line.indexOf('node_modules') > -1) {
+                return 'greyout';
+            }
+            if (line.indexOf('  at ') === -1) {
+                return '';
+            }
+
+            return 'highlight';
+        }
+        return '';
+    };
+}
+
+
+app.component('pbrStackModal', {
+    templateUrl: "pbr-stack-modal.html",
+    bindings: {
+        index: '=',
+        data: '='
+    },
+    controller: PbrStackModalController
+});
+
+function PbrScreenshotModalController($scope, $rootScope) {
+    var ctrl = this;
+    ctrl.rootScope = $rootScope;
+    ctrl.getParent = getParent;
+    ctrl.getShortDescription = getShortDescription;
+
+    /**
+     * Updates which modal is selected.
+     */
+    this.updateSelectedModal = function (event, index) {
+        var key = event.key; //try to use non-deprecated key first https://developer.mozilla.org/de/docs/Web/API/KeyboardEvent/keyCode
+        if (key == null) {
+            var keyMap = {
+                37: 'ArrowLeft',
+                39: 'ArrowRight'
+            };
+            key = keyMap[event.keyCode]; //fallback to keycode
+        }
+        if (key === "ArrowLeft" && this.hasPrevious) {
+            this.showHideModal(index, this.previous);
+        } else if (key === "ArrowRight" && this.hasNext) {
+            this.showHideModal(index, this.next);
+        }
+    };
+
+    /**
+     * Hides the modal with the #oldIndex and shows the modal with the #newIndex.
+     */
+    this.showHideModal = function (oldIndex, newIndex) {
+        const modalName = '#imageModal';
+        $(modalName + oldIndex).modal("hide");
+        $(modalName + newIndex).modal("show");
+    };
+
+}
+
+app.component('pbrScreenshotModal', {
+    templateUrl: "pbr-screenshot-modal.html",
+    bindings: {
+        index: '=',
+        data: '=',
+        next: '=',
+        previous: '=',
+        hasNext: '=',
+        hasPrevious: '='
+    },
+    controller: PbrScreenshotModalController
+});
+
+app.factory('TitleService', ['$document', function ($document) {
+    return {
+        setTitle: function (title) {
+            $document[0].title = title;
+        }
+    };
+}]);
+
+
+app.run(
+    function ($rootScope, $templateCache) {
+        //make sure this option is on by default
+        $rootScope.showSmartStackTraceHighlight = true;
+        
+  $templateCache.put('pbr-screenshot-modal.html',
+    '<div class="modal" id="imageModal{{$ctrl.index}}" tabindex="-1" role="dialog"\n' +
+    '     aria-labelledby="imageModalLabel{{$ctrl.index}}" ng-keydown="$ctrl.updateSelectedModal($event,$ctrl.index)">\n' +
+    '    <div class="modal-dialog modal-lg m-screenhot-modal" role="document">\n' +
+    '        <div class="modal-content">\n' +
+    '            <div class="modal-header">\n' +
+    '                <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
+    '                    <span aria-hidden="true">&times;</span>\n' +
+    '                </button>\n' +
+    '                <h6 class="modal-title" id="imageModalLabelP{{$ctrl.index}}">\n' +
+    '                    {{$ctrl.getParent($ctrl.data.description)}}</h6>\n' +
+    '                <h5 class="modal-title" id="imageModalLabel{{$ctrl.index}}">\n' +
+    '                    {{$ctrl.getShortDescription($ctrl.data.description)}}</h5>\n' +
+    '            </div>\n' +
+    '            <div class="modal-body">\n' +
+    '                <img class="screenshotImage" ng-src="{{$ctrl.data.screenShotFile}}">\n' +
+    '            </div>\n' +
+    '            <div class="modal-footer">\n' +
+    '                <div class="pull-left">\n' +
+    '                    <button ng-disabled="!$ctrl.hasPrevious" class="btn btn-default btn-previous" data-dismiss="modal"\n' +
+    '                            data-toggle="modal" data-target="#imageModal{{$ctrl.previous}}">\n' +
+    '                        Prev\n' +
+    '                    </button>\n' +
+    '                    <button ng-disabled="!$ctrl.hasNext" class="btn btn-default btn-next"\n' +
+    '                            data-dismiss="modal" data-toggle="modal"\n' +
+    '                            data-target="#imageModal{{$ctrl.next}}">\n' +
+    '                        Next\n' +
+    '                    </button>\n' +
+    '                </div>\n' +
+    '                <a class="btn btn-primary" href="{{$ctrl.data.screenShotFile}}" target="_blank">\n' +
+    '                    Open Image in New Tab\n' +
+    '                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>\n' +
+    '                </a>\n' +
+    '                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\n' +
+    '            </div>\n' +
+    '        </div>\n' +
+    '    </div>\n' +
+    '</div>\n' +
+     ''
+  );
+
+  $templateCache.put('pbr-stack-modal.html',
+    '<div class="modal" id="modal{{$ctrl.index}}" tabindex="-1" role="dialog"\n' +
+    '     aria-labelledby="stackModalLabel{{$ctrl.index}}">\n' +
+    '    <div class="modal-dialog modal-lg m-stack-modal" role="document">\n' +
+    '        <div class="modal-content">\n' +
+    '            <div class="modal-header">\n' +
+    '                <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
+    '                    <span aria-hidden="true">&times;</span>\n' +
+    '                </button>\n' +
+    '                <h6 class="modal-title" id="stackModalLabelP{{$ctrl.index}}">\n' +
+    '                    {{$ctrl.getParent($ctrl.data.description)}}</h6>\n' +
+    '                <h5 class="modal-title" id="stackModalLabel{{$ctrl.index}}">\n' +
+    '                    {{$ctrl.getShortDescription($ctrl.data.description)}}</h5>\n' +
+    '            </div>\n' +
+    '            <div class="modal-body">\n' +
+    '                <div ng-if="$ctrl.data.trace.length > 0">\n' +
+    '                    <div ng-if="$ctrl.isValueAnArray($ctrl.data.trace)">\n' +
+    '                        <pre class="logContainer" ng-repeat="trace in $ctrl.data.trace track by $index"><div ng-class="$ctrl.applySmartHighlight(line)" ng-repeat="line in trace.split(\'\\n\') track by $index">{{line}}</div></pre>\n' +
+    '                    </div>\n' +
+    '                    <div ng-if="!$ctrl.isValueAnArray($ctrl.data.trace)">\n' +
+    '                        <pre class="logContainer"><div ng-class="$ctrl.applySmartHighlight(line)" ng-repeat="line in $ctrl.data.trace.split(\'\\n\') track by $index">{{line}}</div></pre>\n' +
+    '                    </div>\n' +
+    '                </div>\n' +
+    '                <div ng-if="$ctrl.data.browserLogs.length > 0">\n' +
+    '                    <h5 class="modal-title">\n' +
+    '                        Browser logs:\n' +
+    '                    </h5>\n' +
+    '                    <pre class="logContainer"><div class="browserLogItem"\n' +
+    '                                                   ng-repeat="logError in $ctrl.data.browserLogs track by $index"><div><span class="label browserLogLabel label-default"\n' +
+    '                                                                                                                             ng-class="{\'label-danger\': logError.level===\'SEVERE\', \'label-warning\': logError.level===\'WARNING\'}">{{logError.level}}</span><span class="label label-default">{{$ctrl.convertTimestamp(logError.timestamp)}}</span><div ng-repeat="messageLine in logError.message.split(\'\\\\n\') track by $index">{{ messageLine }}</div></div></div></pre>\n' +
+    '                </div>\n' +
+    '            </div>\n' +
+    '            <div class="modal-footer">\n' +
+    '                <button class="btn btn-default"\n' +
+    '                        ng-class="{active: $ctrl.rootScope.showSmartStackTraceHighlight}"\n' +
+    '                        ng-click="$ctrl.toggleSmartStackTraceHighlight()">\n' +
+    '                    <span class="glyphicon glyphicon-education black"></span> Smart Stack Trace\n' +
+    '                </button>\n' +
+    '                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\n' +
+    '            </div>\n' +
+    '        </div>\n' +
+    '    </div>\n' +
+    '</div>\n' +
+     ''
+  );
+
+    });
