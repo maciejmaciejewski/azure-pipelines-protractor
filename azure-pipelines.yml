@@ -6,7 +6,7 @@ resources:
     ref: 'refs/heads/master'
 
 trigger:
-- master
+- feature/multistage
 
 jobs:
 - template: tmpl/extensions/publish_extension.yml@templates
