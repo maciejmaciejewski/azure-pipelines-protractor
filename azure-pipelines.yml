@@ -14,4 +14,3 @@ jobs:
     version: 1.0 # .$(Build.BuildId) will be appended by the template
     extensionName: Protractor Extension
     extensionId: protractor-report
-    shareDevWith: maciejmaciejewski-dev
