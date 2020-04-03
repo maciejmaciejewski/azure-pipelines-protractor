@@ -132,7 +132,8 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
                       {(props: { selectedTabId: string }) => {
                           if ( this.tabContents.get(props.selectedTabId) === this.tabInitialContent) {
                               this.props.attachmentClient.getAttachmentContent(props.selectedTabId).then((content) => {
-                                  this.tabContents.set(props.selectedTabId, this.purify.sanitize(content, this.purifyConfig))
+                                  //this.tabContents.set(props.selectedTabId, this.purify.sanitize(content, this.purifyConfig))
+                                  this.tabContents.set(props.selectedTabId, content)
                               }).catch(error => {
                                   this.tabContents.set(props.selectedTabId, '<div class="wide"><p>Error loading report:<br/>' + error + '</p></div>')
                                   setError(error)
@@ -198,7 +199,7 @@ abstract class AttachmentClient {
         throw new Error(response.statusText)
     }
     setText('Processing Report File')
-    const contentJSON = JSON.parse(await response.text())
+    const contentJSON = JSON.parse(JSON.parse(await response.text()))
     const screenshots = await this.getScreenshotAttachments()
     if (screenshots.length > 0) {
       screenshots.forEach(screenshot => {
