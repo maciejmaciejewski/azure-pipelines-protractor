@@ -16,7 +16,7 @@ import { ObservableValue, ObservableObject } from "azure-devops-ui/Core/Observab
 import { Observer } from "azure-devops-ui/Observer"
 import { Tab, TabBar, TabSize } from "azure-devops-ui/Tabs"
 
-import mustache from'mustache'
+import * as mustache from 'mustache'
 
 const ATTACHMENT_TYPE = "protractor.report";
 const SCREENSHOT_ATTACHMENT_TYPE = "protractor.screenshot";
