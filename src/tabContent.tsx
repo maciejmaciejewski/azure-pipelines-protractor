@@ -20,7 +20,7 @@ import mustache from'mustache'
 
 const ATTACHMENT_TYPE = "protractor.report";
 const SCREENSHOT_ATTACHMENT_TYPE = "protractor.screenshot";
-const OUR_TASK_IDS = ["f921c333-68d3-50ff-9d01-c71ecafad96b", "???"]
+const OUR_TASK_IDS = ["f921c333-68d3-50ff-9d01-c71ecafad96b", "3b603ffa-eaed-5a30-87b4-7ffdadd8f7c2"] // 3b603ffa is the dev ext published as Finastra
 
 SDK.init()
 SDK.ready().then(() => {
