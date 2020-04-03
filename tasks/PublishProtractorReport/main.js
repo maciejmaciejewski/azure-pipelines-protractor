@@ -17,7 +17,7 @@ function uploadScreenshots (reportDirPath) {
 
 function uploadResultsJson (reportDirPath) {
     const properties = {
-      name: 'protractor_report.json',
+      name: tl.getVariable('System.StageName') || 'protractor_report',
       type: 'protractor.report'
     }
 

@@ -4,52 +4,17 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <script src="lib/VSS.SDK.min.js"></script>
-
-  <script type="text/javascript">
-    VSS.init({
-      usePlatformScripts: true,
-      moduleLoaderConfig: {
-        paths: {"enhancer": "scripts"}
-      }
-    });
-    let noop = function () {
-    };
-
-    VSS.ready(function () {
-      require(["dist/protractor-tab"], noop);
-      VSS.notifyLoadSucceeded();
-    });
-
-    VSS.register("registeredEnvironmentObject", {
-      updateContext: noop
-    });
-
-    VSS.register("registerRelease", {
-      updateContext: noop,
-      isInvisible: function (state) {
-        let protractorTaskId = "f921c333-68d3-50ff-9d01-c71ecafad96b"
-        let resultArray = []
-        state.releaseEnvironment.deployPhasesSnapshot.forEach(phase => {
-          phase.workflowTasks.forEach(task => {
-              resultArray.push(task.taskId)
-          })
-        })
-
-        return !resultArray.includes(protractorTaskId)
-      }
-    });
-  </script>
-
   <style>
     html, body {
       background-color: transparent !important;
       margin: 0;
       padding: 0;
     }
-    #result {
-      display: none;
+
+    #protractor-result {
+      display: none
     }
+
     .wide {
       position: absolute;
       top: 20px;
@@ -61,11 +26,7 @@
       box-shadow: 0 2px 6px 2px rgba(0, 0, 0, .05);
     }
 
-    #protractor-result {
-      display: none
-    }
-
-    #waiting p {
+    #protractor-ext-message p, .wide p {
       padding: 0;
       margin: auto 0;
       font-family: arial, serif;
@@ -109,13 +70,12 @@
 </head>
 
 <body>
-<div id="container">
-  <div id="waiting" class="wide">
+  <div id="protractor-ext-message" class="wide">
     <div class="spinner"></div>
     <div class="error-badge"></div>
     <p>Waiting for task results...</p>
   </div>
-  <iframe id="protractor-result" class="wide" src="about:blank"></iframe>
-</div>
+  <div id="protractor-ext-container"/>
+  <script type="text/javascript" src="tabContent.js" charset="utf-8"></script>
 </body>
 </html>
