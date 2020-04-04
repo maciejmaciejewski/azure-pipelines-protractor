@@ -133,7 +133,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
                           if ( this.tabContents.get(props.selectedTabId) === this.tabInitialContent) {
                               this.props.attachmentClient.getAttachmentContent(props.selectedTabId).then((content) => {
                                   //this.tabContents.set(props.selectedTabId, this.purify.sanitize(content, this.purifyConfig))
-                              this.tabContents.set(props.selectedTabId, '<iframe class="wide" src="about:blank">'+content+'</iframe>')
+                              this.tabContents.set(props.selectedTabId, '<iframe class="wide" srcdoc="'+content+'"></iframe>')
                               }).catch(error => {
                                   this.tabContents.set(props.selectedTabId, '<div class="wide"><p>Error loading report:<br/>' + error + '</p></div>')
                                   setError(error)
