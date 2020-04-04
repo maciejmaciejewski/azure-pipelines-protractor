@@ -5,7 +5,6 @@ import * as ReactDOM from "react-dom"
 import * as SDK from "azure-devops-extension-sdk"
 
 import fetch from "node-fetch"
-import * as createDOMPurify from "dompurify"
 
 import { getClient } from "azure-devops-extension-api"
 import { ReleaseEnvironment, ReleaseRestClient, ReleaseTaskAttachment } from "azure-devops-extension-api/Release"
