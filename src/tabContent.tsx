@@ -94,10 +94,10 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
   }
 
   public componentDidMount() {
-    const config = SDK.getConfiguration()
-    SDK.notifyLoadSucceeded().then(() => {
-        SDK.resize()
-    });
+    // const config = SDK.getConfiguration()
+    // SDK.notifyLoadSucceeded().then(() => {
+    //     SDK.resize()
+    // });
   }
 
   public escapeHTML(str: string) {
@@ -220,8 +220,6 @@ abstract class AttachmentClient {
   }
 }
 
-
-
 class BuildAttachmentClient extends AttachmentClient {
   private build: Build
 
@@ -238,6 +236,7 @@ class BuildAttachmentClient extends AttachmentClient {
   }
 
   public async getScreenshotAttachments(): Promise<Attachment[]> {
+    console.log('Get screenshot list')
     const buildClient: BuildRestClient = getClient(BuildRestClient)
     return await buildClient.getAttachments(this.build.project.id, this.build.id, SCREENSHOT_ATTACHMENT_TYPE)
   }
@@ -294,7 +293,7 @@ class ReleaseAttachmentClient extends AttachmentClient {
     }
     this.projectId = project.id
     this.deployStepAttempt = deployStep.attempt
-    console.log('Get attachments')
+    console.log('Get attachment list')
     this.attachments = await releaseClient.getReleaseTaskAttachments(project.id, releaseId, environmentId, deployStep.attempt, this.runPlanId, ATTACHMENT_TYPE)
     if (this.attachments.length === 0) {
         throw new Error("There is no attachment")
@@ -305,6 +304,7 @@ class ReleaseAttachmentClient extends AttachmentClient {
   }
 
   public async getScreenshotAttachments(): Promise<ReleaseTaskAttachment[]> {
+    console.log('Get screenshot list')
     const releaseClient: ReleaseRestClient = getClient(ReleaseRestClient)
     return await releaseClient.getReleaseTaskAttachments(this.projectId, this.releaseEnvironment.releaseId, this.releaseEnvironment.id, this.deployStepAttempt, this.runPlanId, SCREENSHOT_ATTACHMENT_TYPE)
   }
