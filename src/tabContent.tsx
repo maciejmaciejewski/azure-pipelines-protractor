@@ -310,19 +310,3 @@ class ReleaseAttachmentClient extends AttachmentClient {
   }
 
 }
-
-
-
-
-
-
-    // } catch (error) {
-    //   const container = this.getElement().get(0);
-    //   const spinner = container.querySelector(".spinner") as HTMLElement;
-    //   const errorBadge = container.querySelector('.error-badge') as HTMLElement;
-    //   if (spinner && errorBadge) {
-    //     spinner.style.display = 'none';
-    //     errorBadge.style.display = 'block';
-    //   }
-    //   this.setTabText('Failed to load Protractor Report')
-    // }
