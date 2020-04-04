@@ -70,7 +70,7 @@ function displayReports(attachmentClient: AttachmentClient) {
     ReactDOM.render(<TaskAttachmentPanel attachmentClient={attachmentClient} />, document.getElementById("protractor-ext-container"))
     document.getElementById("protractor-ext-message").style.display = "none"
   } else {
-  setError("Can't find any report attachment")
+  setError(Error("Can't find any report attachment"))
   }
 }
 
