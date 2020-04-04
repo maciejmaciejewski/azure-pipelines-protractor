@@ -88,16 +88,40 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
   private tabContents: ObservableObject<string>
   private tabInitialContent: string = '<div class="wide"><p>Loading...</p></div>'
   private purify = createDOMPurify()
-  private purifyConfig = {
-      USE_PROFILES: { html: true, svg: true, svgFilters: true, mathMl: true },
-      ALLOW_DATA_ATTR: true,
-      FORCE_BODY: true
-  }
 
   constructor(props: TaskAttachmentPanelProps) {
-      super(props);
-      this.selectedTabId = new ObservableValue(props.attachmentClient.getAttachments()[0].name)
-      this.tabContents = new ObservableObject()
+    super(props);
+    this.selectedTabId = new ObservableValue(props.attachmentClient.getAttachments()[0].name)
+    this.tabContents = new ObservableObject()
+    this.purify.setConfig({
+      USE_PROFILES: {
+        html: true,
+        svg: true, svgFilters: true,
+        mathMl: true,
+      },
+      ADD_TAGS: [
+          'meta',
+          'script',
+          'link',
+      ],
+      ADD_ATTR: [
+          'ng-app',
+          'ng-binding',
+          'ng-class',
+          'ng-click',
+          'ng-controller',
+          'ng-csp>',
+          'ng-disabled',
+          'ng-if',
+          'ng-model',
+          'ng-repeat',
+          'ng-show',
+          'ng-src',
+          'ng-style',
+      ],
+      ALLOW_DATA_ATTR: true,
+      WHOLE_DOCUMENT: true
+    })
   }
   public componentDidMount() {
       const config = SDK.getConfiguration()
@@ -142,8 +166,9 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
                       {(props: { selectedTabId: string }) => {
                           if ( this.tabContents.get(props.selectedTabId) === this.tabInitialContent) {
                               this.props.attachmentClient.getAttachmentContent(props.selectedTabId).then((content) => {
-                                  //this.tabContents.set(props.selectedTabId, this.purify.sanitize(content, this.purifyConfig))
-                              this.tabContents.set(props.selectedTabId, '<iframe class="wide" srcdoc="' + this.escapeHTML(content) + '"></iframe>')
+                                //this.tabContents.set(props.selectedTabId, this.purify.sanitize(content, this.purifyConfig))
+                                //this.tabContents.set(props.selectedTabId, '<iframe class="wide" srcdoc="' + this.escapeHTML(content) + '"></iframe>')
+                                this.tabContents.set(props.selectedTabId, '<iframe class="wide" srcdoc="' + this.escapeHTML(this.purify.sanitize(content)) + '"></iframe>')
                               }).catch(error => {
                                   this.tabContents.set(props.selectedTabId, '<div class="wide"><p>Error loading report:<br/>' + error + '</p></div>')
                                   setError(error)
