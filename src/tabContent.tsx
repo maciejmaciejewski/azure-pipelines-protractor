@@ -14,12 +14,18 @@ import { CommonServiceIds, IProjectPageService } from "azure-devops-extension-ap
 import { ObservableValue, ObservableObject } from "azure-devops-ui/Core/Observable"
 import { Observer } from "azure-devops-ui/Observer"
 import { Tab, TabBar, TabSize } from "azure-devops-ui/Tabs"
-
 import * as mustache from 'mustache'
 
 const ATTACHMENT_TYPE = "protractor.report";
 const SCREENSHOT_ATTACHMENT_TYPE = "protractor.screenshot";
-const OUR_TASK_IDS = ["f921c333-68d3-50ff-9d01-c71ecafad96b", "3b603ffa-eaed-5a30-87b4-7ffdadd8f7c2"] // 3b603ffa is the dev ext published as Finastra
+const OUR_TASK_IDS = [
+  // PROD
+  "f921c333-68d3-50ff-9d01-c71ecafad96b",
+  // Finastra Dev
+  "3b603ffa-eaed-5a30-87b4-7ffdadd8f7c2",
+  // MM Dev
+  "f921c333-68d3-50ff-9d01-c71ecafad96b"
+]
 
 SDK.init()
 SDK.ready().then(() => {
