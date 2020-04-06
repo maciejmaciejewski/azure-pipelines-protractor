@@ -63,3 +63,5 @@ typings/
 
 dist/
 package-lock.json
+*.vsix
+.taskkey
