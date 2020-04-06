@@ -24,7 +24,7 @@ const OUR_TASK_IDS = [
   // Finastra Dev
   "3b603ffa-eaed-5a30-87b4-7ffdadd8f7c2",
   // MM Dev
-  "f921c333-68d3-50ff-9d01-c71ecafad96b"
+  "e9a37290-3428-11e9-a0c0-333b046ddb44"
 ]
 
 SDK.init()
