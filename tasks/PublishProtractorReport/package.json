@@ -1,6 +1,6 @@
 {
   "name": "publishprotractorreport",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.7.7",
+    "dashify": "^2.0.0",
     "globby": "^10.0.1",
+    "hat": "0.0.3",
     "mustache": "^3.0.1"
   }
 }

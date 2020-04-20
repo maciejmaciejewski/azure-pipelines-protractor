@@ -15,7 +15,7 @@
   "version": {
     "Major": "1",
     "Minor": "1",
-    "Patch": "0"
+    "Patch": "1"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Publish Protractor Report",
@@ -27,6 +27,14 @@
       "defaultValue": "$(System.DefaultWorkingDirectory)",
       "required": true,
       "helpMarkDown": "Path to Protractor Report directory"
+    },
+    {
+      "name": "tabName",
+      "type": "string",
+      "label": "Report tab name",
+      "defaultValue": "Protractor",
+      "required": false,
+      "helpMarkDown": "Name of the tab displayed in the report"
     }
   ],
   "execution": {

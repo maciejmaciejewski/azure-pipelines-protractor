@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const tl = require('azure-pipelines-task-lib/task')
 const globby = require('globby')
+const hat = require('hat')
+const dashify = require('dashify')
 
 function uploadScreenshots (reportDirPath) {
   const files = globby.sync([`${reportDirPath.replace(/\\/g, '/')}/screenshots`], {expandDirectories: { extensions: ['png'], files: [ '*' ]}})
@@ -16,8 +18,14 @@ function uploadScreenshots (reportDirPath) {
 }
 
 function uploadResultsJson (reportDirPath) {
+    const jobName = dashify(tl.getVariable('Agent.JobName'))
+    const stageName = dashify(tl.getVariable('System.StageDisplayName'))
+    const stageAttempt = tl.getVariable('System.StageAttempt')
+    const tabName = tl.getInput('tabName', false ) || 'Protractor'
+    const uniqueId = hat()
+
     const properties = {
-      name: tl.getVariable('System.StageName') || 'protractor_report',
+      name:  `${tabName}.${jobName}.${stageName}.${stageAttempt}.${uniqueId}`,
       type: 'protractor.report'
     }
 
@@ -30,6 +38,7 @@ function uploadResultsJson (reportDirPath) {
 }
 
 function run () {
+  console.log("New version has been released, please find change log at https://github.com/maciejmaciejewski/azure-pipelines-protractor/releases")
   try {
     const reportDirPath = path.resolve(tl.getInput('cwd', true))
     tl.debug(reportDirPath)
