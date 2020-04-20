@@ -38,7 +38,7 @@ function uploadResultsJson (reportDirPath) {
 }
 
 function run () {
-  tl.info("New version has been released, please find change log at https://github.com/maciejmaciejewski/azure-pipelines-protractor/releases")
+  console.log("New version has been released, please find change log at https://github.com/maciejmaciejewski/azure-pipelines-protractor/releases")
   try {
     const reportDirPath = path.resolve(tl.getInput('cwd', true))
     tl.debug(reportDirPath)
