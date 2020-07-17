@@ -1,8 +1,11 @@
+[![Donate](https://img.shields.io/static/v1?logo=paypal&label=PayPal&message=Donate&color=yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZH953HFWKBJFA)
+[![Build Status](https://dev.azure.com/maciejmaciejewski-dev/extensions/_apis/build/status/Protractor/extension-build?branchName=master)](https://dev.azure.com/maciejmaciejewski-dev/extensions/_build/latest?definitionId=1&branchName=master)
+
 # Protractor Report Tab for Azure Pipelines
 
-This repository contains the source code of Azure DevOps extension for publishig Protractor Report on Build and Release tabs.
+Azure DevOps extension that provides a task for publishing Protractor report in a HTML format and embeds it into a Build and Release pages.
 
-The uses reports from :heart: [Protractor Beautiful Reporter](https://www.npmjs.com/package/protractor-beautiful-reporter) :heart:.
+The extension is and will remain free of charge, however if you would like to support me please consider donating by using the PayPal button above.
 
 ## Configuration
 

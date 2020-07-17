@@ -5,7 +5,7 @@
   "publisher": "MaciejMaciejewski",
   "public": false,
   "author": "Maciej Maciejewski",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Embed Protractor HTML report in Azure Pipelines",
   "galleryFlags": [
     "Preview"
@@ -16,10 +16,10 @@
   },
   "screenshots": [
     {
-      "path": "documentation/azure-pipelines-configuration.png"
+      "path": "documentation/protractor-tab-build.png"
     },
     {
-      "path": "documentation/protractor-tab-build.png"
+      "path": "documentation/azure-pipelines-configuration.png"
     }
   ],
   "targets": [
