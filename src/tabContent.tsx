@@ -218,9 +218,9 @@ abstract class AttachmentClient {
       throw new Error(response.statusText)
     }
 
-    setText('Processing Report File')
+    setText('Processing Report')
     const responseText = await response.text()
-
+    console.log(responseText)
     const contentJSON = JSON.parse(JSON.parse(responseText))
     const screenshots = await this.getScreenshotAttachments()
     if (screenshots.length > 0) {
@@ -249,15 +249,18 @@ class BuildAttachmentClient extends AttachmentClient {
 
   public async init() {
     await this.loadReportTemplates()
-    console.log('Get attachment list')
     const buildClient: BuildRestClient = getClient(BuildRestClient)
+    setText('Fetching list of report attachments')
     this.attachments = await buildClient.getAttachments(this.build.project.id, this.build.id, ATTACHMENT_TYPE)
+    console.log(this.attachments)
   }
 
   public async getScreenshotAttachments(): Promise<Attachment[]> {
-    console.log('Get screenshot list')
+    setText('Fetchning list of screenshot attachments')
     const buildClient: BuildRestClient = getClient(BuildRestClient)
-    return await buildClient.getAttachments(this.build.project.id, this.build.id, SCREENSHOT_ATTACHMENT_TYPE)
+    const screenshotAttachments = await buildClient.getAttachments(this.build.project.id, this.build.id, SCREENSHOT_ATTACHMENT_TYPE)
+    console.log(screenshotAttachments)
+    return screenshotAttachments
   }
 }
 
@@ -323,9 +326,10 @@ class ReleaseAttachmentClient extends AttachmentClient {
   }
 
   public async getScreenshotAttachments(): Promise<ReleaseTaskAttachment[]> {
-    console.log('Get screenshot list')
     const releaseClient: ReleaseRestClient = getClient(ReleaseRestClient)
-    return await releaseClient.getReleaseTaskAttachments(this.projectId, this.releaseEnvironment.releaseId, this.releaseEnvironment.id, this.deployStepAttempt, this.runPlanId, SCREENSHOT_ATTACHMENT_TYPE)
+    const screenshotAttachments = await releaseClient.getReleaseTaskAttachments(this.projectId, this.releaseEnvironment.releaseId, this.releaseEnvironment.id, this.deployStepAttempt, this.runPlanId, SCREENSHOT_ATTACHMENT_TYPE)
+    console.log(screenshotAttachments)
+    return screenshotAttachments
   }
 
 }

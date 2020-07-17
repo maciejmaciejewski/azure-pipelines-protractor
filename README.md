@@ -1,8 +1,11 @@
+[![Donate](https://img.shields.io/static/v1?logo=paypal&label=PayPal&message=Donate&color=yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZH953HFWKBJFA)
+[![Build Status](https://dev.azure.com/maciejmaciejewski-dev/extensions/_apis/build/status/Protractor/extension-build?branchName=master)](https://dev.azure.com/maciejmaciejewski-dev/extensions/_build/latest?definitionId=1&branchName=master)
+
 # Protractor Report Tab for Azure Pipelines
 
-This repository contains the source code of Azure DevOps extension for publishig Protractor Report on Build and Release tabs.
+Azure DevOps extension that provides a task for publishing Protractor report in a HTML format and embeds it into a Build and Release pages.
 
-The uses reports from :heart: [Protractor Beautiful Reporter](https://www.npmjs.com/package/protractor-beautiful-reporter) :heart:.
+The extension is and will remain free of charge, however if you would like to support me please consider donating by using the PayPal button above.
 
 ## Configuration
 
@@ -49,48 +52,3 @@ steps:
 ### Result Example
 
 ![Protractor Report Task](documentation/protractor-tab-build.png)
-
-## Contributors
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-      <td align="center">
-      <a href="https://github.com/maciejmaciejewski">
-        <img src="https://avatars1.githubusercontent.com/u/15831316?v=4" width="100px;" alt=""/>
-        <br />
-        <b>Maciej Maciejewski</b>
-    </td>
-    <td align="center">
-      <a href="https://github.com/janzaremski">
-        <img src="https://avatars1.githubusercontent.com/u/30691590" width="100px;" alt=""/>
-        <br />
-        <b>Jan Zaremski</b>
-    </td>
-    <td align="center">
-      <a href="https://github.com/afeblot">
-        <img src="https://avatars1.githubusercontent.com/u/12073123?v=4" width="100px;" alt=""/>
-        <br />
-        <b>Alexandre Feblot</b>
-    </td>
-  </tr>
-</table>
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-
-## Changelog
-
-1.1.1
-
-- Introduced new variable `tabName` task variable to control the name of the report tab. If none specified it is defaulted to `Protractor`
-- Support for multi-stage pipelines. With multiple attempts counter is added to the tab header
-- Support for multiple tasks in the same job
-- Support for multiple jobs
-
-1.1.0
-
-- Extension rewritten to React component
-
-1.0.0
-
-- Initial release
